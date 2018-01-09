@@ -104,15 +104,14 @@ public class ProjectServiceImpl implements ProjectService {
         pro.setDurationDate(rs.getCreateDate().toString());
         pro.setStartDate(rs.getStart());
         pro.setEndDate(rs.getFinish());
-        String resource = null;
+        String resource = "";
         if(list.size() > 1){
-            System.out.println("resource = ");
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).getResource() != null){
                     if(i < list.size() - 1){
-                        resource = list.get(i).getResource().getName() + ",";
+                        resource += list.get(i).getResource().getName() + ",";
                     }else{
-                        resource = list.get(i).getResource().getName();
+                        resource += list.get(i).getResource().getName();
                     }
                 }
             }
@@ -122,7 +121,9 @@ public class ProjectServiceImpl implements ProjectService {
                 resource = list.get(0).getResource().getName();
             }
         }
-        pro.setResource(resource);
+        if(!StringUtils.isEmpty(resource)){
+            pro.setResource(resource);
+        }
         this.addProjectInfo(pro);
         pro.setProjId(pro.getProjId());
         proList.add(pro);

@@ -1,4 +1,4 @@
-package com.winter.service;
+package com.winter.service.user;
 
 import com.winter.model.User;
 

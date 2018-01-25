@@ -1,8 +1,9 @@
 package com.winter.utils.redis;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.JedisShardInfo;
+import redis.clients.jedis.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RedisDemo {
     public static void main(String[] args) {
@@ -17,7 +18,19 @@ public class RedisDemo {
         System.out.println(result);
         String name = jedis.get("name");
         System.out.println(name);
+
+
+        List<JedisShardInfo> list = new ArrayList<JedisShardInfo>();
+        list.add(sharInfo);
+        ShardedJedisPool pool = new ShardedJedisPool(config, list);
+        ShardedJedis jedis2 = pool.getResource();
+        jedis2.set("haha", "测试");
+        System.out.println(jedis2.get("haha"));
+
+
+
         jedis.close();
+
     }
 
 }

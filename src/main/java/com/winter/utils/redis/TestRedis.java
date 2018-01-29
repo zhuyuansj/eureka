@@ -9,15 +9,46 @@ import java.util.List;
 import java.util.Map;
 
 public class TestRedis {
-//    private Jedis jedis;
+    private Jedis jedis;
 //
 //    @Before
 //    public void setup() {
 //        //连接redis服务器，192.168.0.100:6379
-//        jedis = new Jedis("101.132.191.77", 6379);
+////        jedis = new Jedis("101.132.191.77", 6379);
+//        jedis = new Jedis("192.168.184.128", 6379);
 //        //权限认证
-//        jedis.auth("admin");
+//        jedis.auth("123456");
 //    }
+    @Test
+    public void test哨兵机制(){
+        Jedis jedis = new Jedis("192.168.184.128", 6379);
+//        //权限认证,密码设置的是123456
+        jedis.auth("123456");
+        jedis.set("name","我是192.168.184.128存在主服务器");
+        Jedis jedis1 = new Jedis("192.168.184.136", 6379);
+//        //权限认证,密码设置的是123456
+        jedis1.auth("123456");
+        String name1 = jedis1.get("name");
+        System.out.println("我是136从机"+name1);
+        Jedis jedis2 = new Jedis("192.168.184.135", 6379);
+//        //权限认证,密码设置的是123456
+        jedis2.auth("123456");
+        String name2 = jedis2.get("name");
+        System.out.println("我是135从机"+name2);
+        System.out.println("测试从机是否可写");
+        try {
+            jedis1.set("name2","测试从机是否可写");
+            jedis2.set("name2","测试从机是否可写");
+            System.out.println("测试不成功，135从机可以写");
+        }catch (Exception e){
+            System.out.println("说明从机没有写的权限");
+            System.out.println("输出结果"+e.getMessage());
+        }
+
+    }
+
+
+
 
     /**
      * redis存储字符串
@@ -25,9 +56,9 @@ public class TestRedis {
     @Test
     public void testString() {
         //-----添加数据----------
-        Jedis jedis = new Jedis("101.132.191.77", 6379);
-        //权限认证,密码设置的是123456
-        jedis.auth("123456");
+//        Jedis jedis = new Jedis("101.132.191.77", 6379);
+//        //权限认证,密码设置的是123456
+//        jedis.auth("123456");
         jedis.set("name", "xinxin");//向key-->name中放入了value-->xinxin
         System.out.println(jedis.get("name"));//执行结果：xinxin
 
@@ -48,9 +79,9 @@ public class TestRedis {
      */
     @Test
     public void testMap() {
-        Jedis jedis = new Jedis("101.132.191.77", 6379);
-        //权限认证
-        jedis.auth("123456");
+//        Jedis jedis = new Jedis("101.132.191.77", 6379);
+//        //权限认证
+//        jedis.auth("123456");
         //-----添加数据----------
         Map<String, String> map = new HashMap<String, String>();
         map.put("name", "xinxin");
@@ -82,9 +113,9 @@ public class TestRedis {
      */
     @Test
     public void testList() {
-        Jedis jedis = new Jedis("101.132.191.77", 6379);
-        //权限认证
-        jedis.auth("123456");
+//        Jedis jedis = new Jedis("101.132.191.77", 6379);
+//        //权限认证
+//        jedis.auth("123456");
         //开始前，先移除所有的内容
         jedis.del("java framework");
         System.out.println(jedis.lrange("java framework", 0, -1));
@@ -108,9 +139,9 @@ public class TestRedis {
      */
     @Test
     public void testSet() {
-        Jedis jedis = new Jedis("101.132.191.77", 6379);
-        //权限认证
-        jedis.auth("123456");
+//        Jedis jedis = new Jedis("101.132.191.77", 6379);
+//        //权限认证
+//        jedis.auth("123456");
         //添加
         jedis.sadd("user", "liuling");
         jedis.sadd("user", "xinxin");
@@ -127,9 +158,9 @@ public class TestRedis {
 
     @Test
     public void test() throws InterruptedException {
-        Jedis jedis = new Jedis("101.132.191.77", 6379);
-        //权限认证
-        jedis.auth("123456");
+//        Jedis jedis = new Jedis("101.132.191.77", 6379);
+//        //权限认证
+//        jedis.auth("123456");
         //jedis 排序
         //注意，此处的rpush和lpush是List的操作。是一个双向链表（但从表现来看的）
         jedis.del("a");//先清除数据，再加入数据进行测试
